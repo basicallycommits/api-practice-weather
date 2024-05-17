@@ -11,7 +11,6 @@ For weather data, this application uses the [OpenWeatherMap API](https://openwea
 ## Usage
 
 1. Extract the contents of the downloaded `.zip` file.
-2. Open the `dist` directory.
-3. Double-click the `.exe` file to run the application.
+2. Double-click the `.exe` file to run the application.
 
 > **Warning:** Your antivirus software might block the application. If this happens, you may need to whitelist the `.exe` file in your antivirus settings.
