@@ -1,7 +1,7 @@
 # api-practice-weather
 Practicing my API skills
 
-## Installation
+## Download
 
 1. Navigate to the [Releases](https://github.com/basicallycommits/api-practice-weather/releases) page of the repository.
 2. Download the latest `.zip` file from the list of available releases.
