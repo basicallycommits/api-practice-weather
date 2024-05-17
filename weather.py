@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 import requests
 
 def get_weather():
@@ -31,20 +31,31 @@ def get_weather():
 root = tk.Tk()
 root.title("Weather App")
 
+# Set the style
+style = ttk.Style()
+style.theme_use('clam')  # You can choose 'clam', 'alt', 'default', 'classic'
+
 # Create and place the city entry widget
-city_label = tk.Label(root, text="Enter city:")
+city_label = ttk.Label(root, text="Enter city:")
 city_label.pack(pady=5)
 
-city_entry = tk.Entry(root)
+city_entry = ttk.Entry(root)
 city_entry.pack(pady=5)
 
 # Create and place the "Get Weather" button
-get_weather_button = tk.Button(root, text="Get Weather", command=get_weather)
+get_weather_button = ttk.Button(root, text="Get Weather", command=get_weather)
 get_weather_button.pack(pady=5)
 
 # Create and place the result label
-result_label = tk.Label(root, text="", wraplength=300)
+result_label = ttk.Label(root, text="", wraplength=300)
 result_label.pack(pady=10)
+
+# Add some padding to all widgets
+for widget in root.winfo_children():
+    widget.pack_configure(padx=10, pady=5)
+
+# Set minimum window size
+root.minsize(400, 200)
 
 # Start the main event loop
 root.mainloop()
