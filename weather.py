@@ -1,10 +1,20 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import requests
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def get_weather():
     city = city_entry.get()
-    api_key = 'd1d04105b9586d36eaa8c5c095925bb0'
+    api_key = api_key_entry.get()
+    
+    if not api_key:
+        messagebox.showerror("API Key Missing", "Please enter your OpenWeatherMap API key.")
+        return
+    
     url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
     
     try:
@@ -35,6 +45,13 @@ root.title("Weather App")
 style = ttk.Style()
 style.theme_use('clam')  # You can choose 'clam', 'alt', 'default', 'classic'
 
+# Create and place the API key entry widget
+api_key_label = ttk.Label(root, text="Enter your OpenWeatherMap API key:")
+api_key_label.pack(pady=5)
+
+api_key_entry = ttk.Entry(root)
+api_key_entry.pack(pady=5)
+
 # Create and place the city entry widget
 city_label = ttk.Label(root, text="Enter city:")
 city_label.pack(pady=5)
@@ -55,7 +72,7 @@ for widget in root.winfo_children():
     widget.pack_configure(padx=10, pady=5)
 
 # Set minimum window size
-root.minsize(400, 200)
+root.minsize(400, 250)
 
 # Start the main event loop
 root.mainloop()
