@@ -118,7 +118,7 @@ for widget in root.winfo_children():
 root.minsize(400, 300)
 
 # Add icon to the application
-root.iconbitmap("images/logo-black.png")
+root.iconbitmap("../images/logo-black.ico")
 
 # Load or create encryption key
 encryption_key = load_or_create_key()
