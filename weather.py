@@ -3,10 +3,10 @@ from tkinter import ttk, messagebox
 import requests
 import os
 from cryptography.fernet import Fernet
-from tkinter.simpledialog import askstring
 from customtkinter import *
+from tkinter.simpledialog import askstring
 
-# Load encryption key or create one if it doesn't exist
+# Function to load the encryption key or create one if it doesn't exist
 def load_or_create_key():
     key_file = 'key.key'
     if os.path.exists(key_file):
@@ -18,14 +18,14 @@ def load_or_create_key():
             file.write(key)
     return key
 
-# Encrypt the API key
+# Function to encrypt the API key
 def encrypt_api_key(api_key, key):
     cipher_suite = Fernet(key)
     encrypted_key = cipher_suite.encrypt(api_key.encode())
     with open(".apikey", "wb") as file:
         file.write(encrypted_key)
 
-# Decrypt the API key
+# Function to decrypt the API key
 def decrypt_api_key(key):
     try:
         with open(".apikey", "rb") as file:
@@ -36,7 +36,8 @@ def decrypt_api_key(key):
     except Exception as e:
         return None
 
-def get_weather():
+# Function to get the weather information
+def get_weather(event=None):
     city = city_entry.get()
     api_key = decrypt_api_key(encryption_key)
 
@@ -66,10 +67,12 @@ def get_weather():
     except requests.exceptions.RequestException as err:
         messagebox.showerror("Error", f"An error occurred: {err}")
 
-def prompt_and_save_api_key():
-    api_key = askstring("API Key", "Enter your OpenWeatherMap API key:")
+# Function to save the API key and clear the entry
+def save_api_key(event=None):
+    api_key = api_key_entry.get()
     if api_key:
         encrypt_api_key(api_key, encryption_key)
+        api_key_entry.delete(0, tk.END)
         messagebox.showinfo("API Key Saved", "Your API key has been saved.")
 
 # Create the main window
@@ -80,31 +83,39 @@ root.title("Weather App")
 set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
 set_default_color_theme("blue")  # Themes: "blue" (default), "green", "dark-blue"
 
+# Define the font
+font = ("Helvetica", 16)
+
+# Create and place the API key entry widget
+api_key_label = CTkLabel(root, text="Enter API Key:", font=font)
+api_key_label.pack(pady=5)
+
+api_key_entry = CTkEntry(root, font=font)
+api_key_entry.pack(pady=5)
+api_key_entry.bind("<Return>", save_api_key)
+
 # Create and place the city entry widget
-city_label = CTkLabel(root, text="Enter city:")
+city_label = CTkLabel(root, text="Enter city:", font=font)
 city_label.pack(pady=5)
 
-city_entry = CTkEntry(root)
+city_entry = CTkEntry(root, font=font)
 city_entry.pack(pady=5)
+city_entry.bind("<Return>", get_weather)
 
 # Create and place the "Get Weather" button
-get_weather_button = CTkButton(root, text="Get Weather", command=get_weather)
+get_weather_button = CTkButton(root, text="Get Weather", command=get_weather, font=font)
 get_weather_button.pack(pady=5)
 
 # Create and place the result label
-result_label = CTkLabel(root, text="", wraplength=300)
+result_label = CTkLabel(root, text="", wraplength=300, font=font)
 result_label.pack(pady=10)
-
-# Create and place the "Save API Key" button
-save_api_key_button = CTkButton(root, text="Save API Key", command=prompt_and_save_api_key)
-save_api_key_button.pack(pady=5)
 
 # Add some padding to all widgets
 for widget in root.winfo_children():
     widget.pack_configure(padx=10, pady=5)
 
 # Set minimum window size
-root.minsize(400, 200)
+root.minsize(400, 300)
 
 # Add icon to the application
 root.iconbitmap("images/logo-black.png")
