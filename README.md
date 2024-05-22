@@ -8,8 +8,9 @@ Practicing my API skills by making a very simple application that tells you the 
 
 ## Usage
 
-1. Extract the contents of the downloaded `.zip` file.
-2. Double-click the `.exe` file to run the application.
-3. For weather data, this application uses the [OpenWeatherMap API](https://openweathermap.org/). You'll need an API key from OpenWeatherMap to access weather information. Simply paste it in the provided text box. You *do not* need to press enter.
+1. Extract the contents of the downloaded `.zip` file
+2. Navigate to the 'dist' folder
+3. Double-click the `.exe` file to run the application.
+4. For weather data, this application uses the [OpenWeatherMap API](https://openweathermap.org/). You'll need an API key from OpenWeatherMap to access weather information. Simply paste it in the provided text box and press enter on your keyboard.
 
 > **Warning:** Your antivirus software might block the application. If this happens, you may need to whitelist the `.exe` file in your antivirus settings.
