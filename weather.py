@@ -2,16 +2,43 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import requests
 import os
-from dotenv import load_dotenv
-from customtkinter import *
+from cryptography.fernet import Fernet
 from tkinter.simpledialog import askstring
+from customtkinter import *
 
-# Load environment variables from .env file
-load_dotenv()
+# Load encryption key or create one if it doesn't exist
+def load_or_create_key():
+    key_file = 'key.key'
+    if os.path.exists(key_file):
+        with open(key_file, 'rb') as file:
+            key = file.read()
+    else:
+        key = Fernet.generate_key()
+        with open(key_file, 'wb') as file:
+            file.write(key)
+    return key
+
+# Encrypt the API key
+def encrypt_api_key(api_key, key):
+    cipher_suite = Fernet(key)
+    encrypted_key = cipher_suite.encrypt(api_key.encode())
+    with open(".apikey", "wb") as file:
+        file.write(encrypted_key)
+
+# Decrypt the API key
+def decrypt_api_key(key):
+    try:
+        with open(".apikey", "rb") as file:
+            encrypted_key = file.read()
+        cipher_suite = Fernet(key)
+        api_key = cipher_suite.decrypt(encrypted_key).decode()
+        return api_key
+    except Exception as e:
+        return None
 
 def get_weather():
     city = city_entry.get()
-    api_key = os.getenv('OPENWEATHERMAP_API_KEY')
+    api_key = decrypt_api_key(encryption_key)
 
     if not api_key:
         messagebox.showerror("API Key Missing", "Please enter your OpenWeatherMap API key.")
@@ -39,12 +66,10 @@ def get_weather():
     except requests.exceptions.RequestException as err:
         messagebox.showerror("Error", f"An error occurred: {err}")
 
-def save_api_key():
+def prompt_and_save_api_key():
     api_key = askstring("API Key", "Enter your OpenWeatherMap API key:")
     if api_key:
-        with open(".env", "w") as env_file:
-            env_file.write(f"OPENWEATHERMAP_API_KEY={api_key}")
-        load_dotenv()  # Reload the .env file to update the API key in the environment
+        encrypt_api_key(api_key, encryption_key)
         messagebox.showinfo("API Key Saved", "Your API key has been saved.")
 
 # Create the main window
@@ -71,7 +96,7 @@ result_label = CTkLabel(root, text="", wraplength=300)
 result_label.pack(pady=10)
 
 # Create and place the "Save API Key" button
-save_api_key_button = CTkButton(root, text="Save API Key", command=save_api_key)
+save_api_key_button = CTkButton(root, text="Save API Key", command=prompt_and_save_api_key)
 save_api_key_button.pack(pady=5)
 
 # Add some padding to all widgets
@@ -83,6 +108,9 @@ root.minsize(400, 200)
 
 # Add icon to the application
 root.iconbitmap("images/logo-black.png")
+
+# Load or create encryption key
+encryption_key = load_or_create_key()
 
 # Start the main event loop
 root.mainloop()
